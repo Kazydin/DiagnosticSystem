@@ -1,4 +1,4 @@
-﻿namespace DiagnosticSystem.Database.Models
+﻿namespace DiagnosticSystem.DAL.Models
 {
     /// <summary>
     /// Уставки

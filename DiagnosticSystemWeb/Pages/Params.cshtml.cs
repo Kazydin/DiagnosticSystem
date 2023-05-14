@@ -1,5 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DiagnosticSystem.DAL;
+using DiagnosticSystem.DAL.Models;
+
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 
 namespace DiagnosticSystemWeb.Pages
 {
@@ -7,13 +10,21 @@ namespace DiagnosticSystemWeb.Pages
     {
         private readonly ILogger<ParamsModel> _logger;
 
-        public ParamsModel(ILogger<ParamsModel> logger)
+        private Store _store;
+
+        public Param[] Params = new Param[] { };
+
+        public ParamsModel(ILogger<ParamsModel> logger, Store store)
         {
             _logger = logger;
+            _store = store;
         }
 
-        public void OnGet()
+        public async Task<PageResult> OnGetAsync()
         {
+            Params = await _store.Params.ToArrayAsync();
+
+            return Page();
         }
     }
 }

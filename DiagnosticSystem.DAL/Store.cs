@@ -1,8 +1,8 @@
-﻿using DiagnosticSystem.Database.Models;
+﻿using DiagnosticSystem.DAL.Models;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace DiagnosticSystem.Database
+namespace DiagnosticSystem.DAL
 {
     public class Store : DbContext
     {

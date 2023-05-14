@@ -1,8 +1,71 @@
 ﻿@page
-@model ParamsModel
-@{
-    ViewData["Title"] = "Privacy Policy";
-}
-<h1>@ViewData["Title"]</h1>
+@model RulesModel
+@section styles {
+    <style>
+        .param:hover {
+            background: var(--bs-gray-100);
+            cursor: pointer;
+        }
 
-<p>Use this page to detail your site's privacy policy.</p>
+        .param.selected {
+            background: var(--bs-gray-100);
+        }
+
+        .param-link {
+            width: 100%;
+            height: 100%;
+            display: block;
+            padding: var(--bs-list-group-item-padding-y) var(--bs-list-group-item-padding-x);
+            color: inherit;
+            text-decoration: none;
+        }
+
+            .param-link:hover {
+                color: inherit;
+            }
+
+    </style>
+}
+<h1 class="mb-3">Уставки</h1>
+<div class="row">
+    <div class="col">
+        <h4>Параметры</h4>
+        <ul class="list-group">
+            @foreach (var param in Model.Params)
+            {
+                <li class="list-group-item param p-0 @(Model.CurrentParam.ParamId == param.ParamId ? "selected" : "")"><a href="?paramId=@param.ParamId" class="param-link">@param.Name</a></li>
+            }
+        </ul>
+    </div>
+    <div class="col">
+        <h4>Уставки для параметра "@Model.CurrentParam.Name"</h4>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th class="bg-light">ID уставки</th>
+                    <th class="bg-light">Условие</th>
+                    <th class="bg-light">Вид срабатывания</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var param in Model.Rules)
+                {
+                    <tr>
+                        <td>@param.ParamId</td>
+                        <td>@param.sRuleType</td>
+                        <td>@param.sAlertKind</td>
+                    </tr>
+                }
+                @if (Model.Rules.Length == 0)
+                {
+                    <tr>
+                        <td colspan="2">Уставок нет</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+

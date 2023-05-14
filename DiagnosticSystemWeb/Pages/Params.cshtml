@@ -1,8 +1,32 @@
 ﻿@page
 @model ParamsModel
-@{
-    ViewData["Title"] = "Privacy Policy";
+@section Styles {
+    <style>
+        .param:hover {
+            background: var(--bs-gray-100);
+            cursor: pointer;
+        }
+    </style>
 }
-<h1>@ViewData["Title"]</h1>
 
-<p>Use this page to detail your site's privacy policy.</p>
+<h1 class="mb-3">Параметры</h1>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th class="bg-light">ID параметра</th>
+            <th class="bg-light">Наименование</th>
+            <th class="bg-light"></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var param in Model.Params)
+        {
+            <tr class="param">
+                <td>@param.ParamId</td>
+                <td>@param.Name</td>
+                <td><a class="btn btn-outline-secondary" href="/Rules?ParamId=@param.ParamId">Уставки</a></td>
+            </tr>
+        }
+    </tbody>
+</table>

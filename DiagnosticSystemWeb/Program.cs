@@ -1,7 +1,15 @@
+using DiagnosticSystem.DAL;
+
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
+
+// DB Init
+string connectionString = builder.Configuration.GetConnectionString("DsDatabase");
+builder.Services.AddDbContext<Store>(opt => opt.UseSqlServer(connectionString).UseSnakeCaseNamingConvention());
 
 var app = builder.Build();
 

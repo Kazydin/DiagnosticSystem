@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DiagnosticSystem.Database.Models
+namespace DiagnosticSystem.DAL.Models
 {
     /// <summary>
     /// Значения параметров
