@@ -13,9 +13,17 @@ namespace DiagnosticSystem.DAL.Configurations
                 .ToTable("alerts")
                 .HasKey(p => p.AlertId);
 
-            builder.HasOne(p => p.Param);
-            builder.HasOne(p => p.ParamRule);
-            builder.HasOne(p => p.ParamValue);
+            builder.HasOne(p => p.Param)
+                .WithMany(p => p.Alerts)
+                .HasForeignKey(p => p.ParamId);
+
+            builder.HasOne(p => p.ParamRule)
+                .WithMany(p => p.Alerts)
+                .HasForeignKey(p => p.RuleId);
+
+            builder.HasOne(p => p.ParamValue)
+                .WithMany(p => p.Alerts)
+                .HasForeignKey(p => p.ValueId);
         }
     }
 }

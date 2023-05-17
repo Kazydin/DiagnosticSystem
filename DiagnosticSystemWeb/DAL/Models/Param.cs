@@ -10,5 +10,7 @@ namespace DiagnosticSystem.DAL.Models
         public int ParamId { get; set; }
 
         public string Name { get; set; }
+
+        public IEnumerable<Alert> Alerts { get; set; }
     }
 }

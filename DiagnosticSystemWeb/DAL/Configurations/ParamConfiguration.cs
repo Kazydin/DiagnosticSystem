@@ -12,6 +12,9 @@ namespace DiagnosticSystem.DAL.Configurations
             builder
                 .ToTable("params")
                 .HasKey(p => p.ParamId);
+
+            builder.HasMany(p => p.Alerts)
+                .WithOne(p => p.Param);
         }
     }
 }

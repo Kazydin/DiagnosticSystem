@@ -16,31 +16,38 @@ namespace DiagnosticSystem.DAL.Models
         /// <summary>
         /// Тип уставки для срабатывания
         /// </summary>
-        public ParamRuleType RuleType { get; set; }
+        public string RuleType { get; set; }
 
         /// <summary>
-        /// Значение
+        /// Минимальное значение
         /// </summary>
-        public decimal Value { get; set; }
+        public decimal MinValue { get; set; }
+
+        /// <summary>
+        /// Максимальное значение
+        /// </summary>
+        public decimal MaxValue { get; set; }
 
         /// <summary>
         /// Тип уставки
         /// </summary>
-        public ParamRuleAlertKind AlertKind { get; set; }
+        public string AlertKind { get; set; }
 
         public Param Param { get; set; }
+
+        public IEnumerable<Alert> Alerts { get; set; }
 
         public string sRuleType
         {
             get
             {
-                string delimiter = RuleType switch
-                {
-                    ParamRuleType.Higher => "больше",
-                    ParamRuleType.Below => "меньше"
-                };
+                //string delimiter = RuleType switch
+                //{
+                //    ParamRuleType.MORE => "больше",
+                //    ParamRuleType.LESS => "меньше"
+                //};
 
-                return "Значение " + delimiter + " " + Value;
+                return "Значение в диапазоне от " + MinValue + " до" + MaxValue;
             }
         }
 
@@ -50,8 +57,8 @@ namespace DiagnosticSystem.DAL.Models
             {
                 return RuleType switch
                 {
-                    ParamRuleType.Higher => "превышение",
-                    ParamRuleType.Below => "понижение"
+                    ParamRuleType.MORE => "превышение",
+                    ParamRuleType.LESS => "понижение"
                 };
             }
         }
@@ -67,5 +74,7 @@ namespace DiagnosticSystem.DAL.Models
                 };
             }
         }
+
+        
     }
 }

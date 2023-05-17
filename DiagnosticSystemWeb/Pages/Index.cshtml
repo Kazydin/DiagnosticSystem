@@ -1,54 +1,75 @@
 ﻿@page
 @model IndexModel
+@{
+    ViewData["Title"] = "Мониторинг";
+}
 
 <div class="card-group">
     <div class="card">
         <div class="card-header fw-bold">Тревоги</div>
         <div class="card-body">
-            @foreach (var alert in Model.Alerts.Where(a => a.ParamRule.AlertKind == DiagnosticSystem.DAL.Models.ParamRuleAlertKind.ALERT))
+            @foreach (var alert in Model.arrAlerts)
             {
                 <div class="card text-bg-danger mb-3">
-                    <div class="card-header">@alert.ParamRule.s2RuleType параметра "Напряжение"</div>
+                    <div class="card-header">@alert.ParamRule.s2RuleType параметра "@alert.Param.Name"</div>
                     <div class="card-body">
-                        Текущение значение: @alert.ParamValue.Value<br />
-                        Предельное по уставке: @alert.ParamRule.Value<br />
-                        Возможные последствия: @alert.Consequence
+                        <div class="mb-3">
+                            Текущение значение: @alert.ParamValue.Value<br />
+                            Диапазон по уставке: @alert.ParamRule.MinValue - @alert.ParamRule.MaxValue<br />
+                            Возможные последствия: @alert.Consequence
+                        </div>
+                        <button class="btn btn-outline-light me-1">Открыть параметр</button>
+                        <button class="btn btn-outline-light me-1">В архив</button>
+                        <button class="btn btn-outline-light">Сообщить в цэх</button>
                     </div>
                     <div class="card-footer">
                         Время тревоги: @alert.ParamValue.DateTime
                     </div>
                 </div>
             }
+            @if (Model.arrAlerts.Length == 0)
+            {
+                <div class="text-secondary">Проблем нет</div>
+            }
         </div>
     </div>
     <div class="card">
         <div class="card-header fw-bold">Предупреждения</div>
         <div class="card-body">
-            <div class="card text-white text-bg-warning mb-3">
-                <div class="card-header">Снижение значения параметра "Давление"</div>
-                <div class="card-body">
-                    Текущение значение: 34<br />
-                    Предельное по уставке: 110<br />
-                    Возможные последствия: поломка жопы
+            @foreach (var alert in Model.arrWarnings)
+            {
+                <div class="card text-bg-warning mb-3">
+                    <div class="card-header">@alert.ParamRule.s2RuleType параметра "@alert.Param.Name"</div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            Текущение значение: @alert.ParamValue.Value<br />
+                            Предельное по уставке: @alert.ParamRule.MinValue - @alert.ParamRule.MaxValue<br />
+                            Возможные последствия: @alert.Consequence
+                        </div>
+                        <button class="btn btn-outline-dark me-1">Открыть параметр</button>
+                        <button class="btn btn-outline-dark me-1">В архив</button>
+                        <button class="btn btn-outline-dark">Сообщить в цэх</button>
+                    </div>
+                    <div class="card-footer">
+                        Время тревоги: @alert.ParamValue.DateTime
+                    </div>
                 </div>
-                <div class="card-footer">
-                    Время тревоги: 14.05.2023 15:02
-                </div>
-            </div>
-            <div class="card text-white text-bg-warning mb-3">
-                <div class="card-header">Снижение значения параметра "Давление"</div>
-                <div class="card-body">
-                    Текущение значение: 34<br />
-                    Предельное по уставке: 110<br />
-                    Возможные последствия: поломка жопы
-                </div>
-                <div class="card-footer">
-                    Время тревоги: 14.05.2023 15:02
-                </div>
-            </div>
+            }
+            @if (Model.arrWarnings.Length == 0)
+            {
+                <div class="text-secondary">Проблем нет</div>
+            }
         </div>
     </div>
 </div>
 <div class="py-2">
-    Последнее обновление: 14.05.2023 15:02
+    Последнее обновление: @DateTime.Now.ToString()
 </div>
+
+@section Scripts {
+    <script>
+        setTimeout(function () {
+            window.location.reload(1);
+        }, 5000);
+    </script>
+}

@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 
 using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DiagnosticSystem.DAL.Models
 {
@@ -18,13 +19,15 @@ namespace DiagnosticSystem.DAL.Models
         /// <summary>
         /// Значение
         /// </summary>
-        public double Value { get; set; }
+        public decimal Value { get; set; }
 
         /// <summary>
         /// Дата и время значения
         /// </summary>
+        [Column("datetime")]
         public DateTime DateTime { get; set; }
 
         public Param Param { get; set; }
+        public IEnumerable<Alert> Alerts { get; set; }
     }
 }

@@ -1,15 +1,15 @@
 ﻿namespace DiagnosticSystem.DAL.Models
 {
-    public enum ParamRuleType
+    public class ParamRuleType
     {
         /// <summary>
         /// Превышение порога
         /// </summary>
-        Higher = 1,
+        public const string MORE = "MORE";
 
         /// <summary>
         /// Ниже допустимого
         /// </summary>
-        Below = 2
+        public const string LESS = "LESS";
     }
 }

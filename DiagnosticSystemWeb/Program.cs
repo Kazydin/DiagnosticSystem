@@ -1,5 +1,7 @@
 using DiagnosticSystem.DAL;
+using DiagnosticSystem.Services;
 
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,6 +12,10 @@ builder.Services.AddRazorPages();
 // DB Init
 string connectionString = builder.Configuration.GetConnectionString("DsDatabase");
 builder.Services.AddDbContext<Store>(opt => opt.UseSqlServer(connectionString).UseSnakeCaseNamingConvention());
+
+builder.Services.AddScoped<Store>();
+
+builder.Services.AddHostedService<MonitoringService>();
 
 var app = builder.Build();
 

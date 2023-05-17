@@ -7,6 +7,11 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/app.css" asp-append-version="true" />
     @RenderSection("Styles", required: false)
+    <style>
+        .nav-link.selected {
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -20,13 +25,16 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Index">Мониторинг</a>
+                            <a class="nav-link text-dark @(ViewData["Title"].ToString() == "Мониторинг" ? "selected" : "" )" asp-area="" asp-page="/Index">Мониторинг</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Params">Параметры</a>
+                            <a class="nav-link text-dark @(ViewData["Title"].ToString() == "Диагностика" ? "selected" : "" )" asp-area="" asp-page="/Diagnostic">Диагностика</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Rules">Уставки</a>
+                            <a class="nav-link text-dark @(ViewData["Title"].ToString() == "Параметры" ? "selected" : "" )" asp-area="" asp-page="/Params">Параметры</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark @(ViewData["Title"].ToString() == "Уставки" ? "selected" : "" )" asp-area="" asp-page="/Rules">Уставки</a>
                         </li>
                     </ul>
                 </div>

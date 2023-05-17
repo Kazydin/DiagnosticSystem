@@ -1,4 +1,5 @@
 ﻿using DiagnosticSystem.DAL.Configurations;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace DiagnosticSystem.DAL.Models
@@ -14,7 +15,7 @@ namespace DiagnosticSystem.DAL.Models
 
         public int ValueId { get; set; }
 
-        public string Consequence { get; set; }
+        public string? Consequence { get; set; }
 
         public Param Param { get; set; }
 

@@ -6,19 +6,15 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DiagnosticSystemWeb.Pages
 {
-    public class IndexModel : PageModel
+    public class DiagnosticModel : PageModel
     {
-        private readonly ILogger<IndexModel> _logger;
-
-        public Alert[] Alerts;
+        private readonly ILogger<DiagnosticModel> _logger;
 
         private Store _store;
 
-        public Alert[] arrAlerts;
+        public Alert[] Alerts = new Alert[] { };
 
-        public Alert[] arrWarnings;
-
-        public IndexModel(ILogger<IndexModel> logger, Store store)
+        public DiagnosticModel(ILogger<DiagnosticModel> logger, Store store)
         {
             _logger = logger;
             _store = store;
@@ -31,10 +27,6 @@ namespace DiagnosticSystemWeb.Pages
                 .Include(a => a.ParamRule)
                 .Include(a => a.ParamValue)
                 .ToArrayAsync();
-
-            arrAlerts = Alerts.Where(a => a.ParamRule?.AlertKind == ParamRuleAlertKind.ALERT).ToArray();
-
-            arrWarnings = Alerts.Where(a => a.ParamRule?.AlertKind == ParamRuleAlertKind.WARNING).ToArray();
 
             return Page();
         }

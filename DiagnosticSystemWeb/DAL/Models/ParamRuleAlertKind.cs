@@ -1,15 +1,15 @@
 ﻿namespace DiagnosticSystem.DAL.Models
 {
-    public enum ParamRuleAlertKind
+    public class ParamRuleAlertKind
     {
         /// <summary>
         /// Тревога
         /// </summary>
-        ALERT = 0,
+        public const string ALERT = "ALERT";
 
         /// <summary>
-        /// Предупреждение
+        /// Предупреждениеs
         /// </summary>
-        WARNING = 1
+        public const string WARNING = "WARNING";
     }
 }

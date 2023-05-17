@@ -1,5 +1,8 @@
 ﻿@page
 @model ParamsModel
+@{
+    ViewData["Title"] = "Параметры";
+}
 @section Styles {
     <style>
         .param:hover {
@@ -16,16 +19,20 @@
         <tr>
             <th class="bg-light">ID параметра</th>
             <th class="bg-light">Наименование</th>
-            <th class="bg-light"></th>
+            <th class="bg-light">Действия</th>
         </tr>
     </thead>
     <tbody>
-        @foreach(var param in Model.Params)
+        @foreach (var param in Model.Params)
         {
             <tr class="param">
                 <td>@param.ParamId</td>
                 <td>@param.Name</td>
-                <td><a class="btn btn-outline-secondary" href="/Rules?ParamId=@param.ParamId">Уставки</a></td>
+                <td>
+                    <a class="btn btn-outline-secondary me-2" href="/Rules?ParamId=@param.ParamId">Уставки</a>
+                    <btn class="btn btn-outline-secondary me-2">Значения</btn>
+                    <btn class="btn btn-outline-secondary">Архив тревог</btn>
+                </td>
             </tr>
         }
     </tbody>
