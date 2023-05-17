@@ -10,8 +10,6 @@ namespace DiagnosticSystem.Services
     {
         private Store _store;
 
-        private int _lastValueId = 0;
-
         private ParamRule[] _paramRules;
 
         private Param[] _params;
@@ -41,28 +39,34 @@ namespace DiagnosticSystem.Services
 
                 while (!cancellationToken.IsCancellationRequested)
                 {
-                    var value = await _store.ParamValues.Where(p => p.).FirstOrDefaultAsync(cancellationToken);
+                    var value = await _store.ParamValues
+                        .Include(p => p.Param)
+                        .ThenInclude(r => r.Rules)
+                        .Where(pv => pv.IsChecked == 0)
+                        .FirstOrDefaultAsync(cancellationToken);
 
                     if (value != null)
                     {
-                        var brokenRules = _paramRules.Where(p => p.ParamId == value.ParamId && value.Value >= p.MinValue && value.Value <= p.MaxValue);
+                        var brokenRules = value.Param.Rules.Where(r => r.IsViolated(value.Value));
 
                         foreach (var rule in brokenRules)
                         {
-                            _store.Alerts.Add(new Alert()
+                            await _store.Alerts.AddAsync(new Alert()
                             {
                                 ParamId = value.ParamId,
                                 RuleId = rule.RuleId,
                                 ValueId = value.ValueId
-                            });
+                            }, cancellationToken);
                         }
 
+                        value.IsChecked = 1;
+
                         await _store.SaveChangesAsync(cancellationToken);
-
-                        _lastValueId = value.ValueId;
                     }
-
-                    await Task.Delay(5000, cancellationToken);
+                    else
+                    {
+                        await Task.Delay(5000, cancellationToken);
+                    }
                 }
             }
         }

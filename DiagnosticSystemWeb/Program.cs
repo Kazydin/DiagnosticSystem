@@ -4,10 +4,12 @@ using DiagnosticSystem.Services;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
+using Newtonsoft.Json;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddRazorPages();
+builder.Services.AddRazorPages().AddNewtonsoftJson(o => o.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
 
 // DB Init
 string connectionString = builder.Configuration.GetConnectionString("DsDatabase");
@@ -34,6 +36,10 @@ app.UseRouting();
 
 app.UseAuthorization();
 
-app.MapRazorPages();
+app.UseEndpoints(endpoints => {
+    endpoints.MapRazorPages();
+    endpoints.MapControllers();
+});
+
 
 app.Run();

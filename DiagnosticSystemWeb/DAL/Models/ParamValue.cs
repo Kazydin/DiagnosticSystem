@@ -27,7 +27,10 @@ namespace DiagnosticSystem.DAL.Models
         [Column("datetime")]
         public DateTime DateTime { get; set; }
 
+        public int IsChecked { get; set; }
+
         public Param Param { get; set; }
+
         public IEnumerable<Alert> Alerts { get; set; }
     }
 }

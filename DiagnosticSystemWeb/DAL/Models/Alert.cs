@@ -17,6 +17,8 @@ namespace DiagnosticSystem.DAL.Models
 
         public string? Consequence { get; set; }
 
+        public int IsArchived { get; set; }
+
         public Param Param { get; set; }
 
         public ParamRule ParamRule { get; set; }

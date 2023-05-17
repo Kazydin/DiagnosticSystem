@@ -3,73 +3,230 @@
 @{
     ViewData["Title"] = "Мониторинг";
 }
+@section Styles {
+    <style>
+        .toast-container > :not(:last-child) {
+            margin-bottom: unset;
+        }
+    </style>
+}
 
 <div class="card-group">
     <div class="card">
         <div class="card-header fw-bold">Тревоги</div>
         <div class="card-body">
-            @foreach (var alert in Model.arrAlerts)
-            {
-                <div class="card text-bg-danger mb-3">
-                    <div class="card-header">@alert.ParamRule.s2RuleType параметра "@alert.Param.Name"</div>
-                    <div class="card-body">
-                        <div class="mb-3">
-                            Текущение значение: @alert.ParamValue.Value<br />
-                            Диапазон по уставке: @alert.ParamRule.MinValue - @alert.ParamRule.MaxValue<br />
-                            Возможные последствия: @alert.Consequence
-                        </div>
-                        <button class="btn btn-outline-light me-1">Открыть параметр</button>
-                        <button class="btn btn-outline-light me-1">В архив</button>
-                        <button class="btn btn-outline-light">Сообщить в цэх</button>
-                    </div>
-                    <div class="card-footer">
-                        Время тревоги: @alert.ParamValue.DateTime
-                    </div>
-                </div>
-            }
-            @if (Model.arrAlerts.Length == 0)
-            {
+            <div id="alerts-container">
                 <div class="text-secondary">Проблем нет</div>
-            }
+            </div>
         </div>
     </div>
     <div class="card">
         <div class="card-header fw-bold">Предупреждения</div>
         <div class="card-body">
-            @foreach (var alert in Model.arrWarnings)
-            {
-                <div class="card text-bg-warning mb-3">
-                    <div class="card-header">@alert.ParamRule.s2RuleType параметра "@alert.Param.Name"</div>
-                    <div class="card-body">
-                        <div class="mb-3">
-                            Текущение значение: @alert.ParamValue.Value<br />
-                            Предельное по уставке: @alert.ParamRule.MinValue - @alert.ParamRule.MaxValue<br />
-                            Возможные последствия: @alert.Consequence
-                        </div>
-                        <button class="btn btn-outline-dark me-1">Открыть параметр</button>
-                        <button class="btn btn-outline-dark me-1">В архив</button>
-                        <button class="btn btn-outline-dark">Сообщить в цэх</button>
-                    </div>
-                    <div class="card-footer">
-                        Время тревоги: @alert.ParamValue.DateTime
-                    </div>
-                </div>
-            }
-            @if (Model.arrWarnings.Length == 0)
-            {
+            <div id="warnings-container">
                 <div class="text-secondary">Проблем нет</div>
-            }
+            </div>
         </div>
     </div>
 </div>
 <div class="py-2">
-    Последнее обновление: @DateTime.Now.ToString()
+    Последнее обновление: <span id="dateReload"></span>
+</div>
+
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="information" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header bg-primary text-white">
+            <strong class="me-auto">Уведомление</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body" id="informationBody">
+
+        </div>
+    </div>
+    <div id="error" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header bg-danger text-white">
+            <strong class="me-auto">Ошибка в ПО</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body" id="errorBody">
+
+        </div>
+    </div>
 </div>
 
 @section Scripts {
     <script>
-        setTimeout(function () {
-            window.location.reload(1);
-        }, 5000);
+        loadData();
+        setInterval(loadData, 2000);
+
+        const toastInformation = document.getElementById('information');
+        const toastInformationInstance = bootstrap.Toast.getOrCreateInstance(toastInformation);
+        const toastError = document.getElementById('error');
+        const toastErrorInstance = bootstrap.Toast.getOrCreateInstance(toastError);
+        const alertsContainer = document.getElementById('alerts-container');
+        const warningsContainer = document.getElementById('warnings-container');
+
+        function handleErrors(response) {
+            if (!response.ok) {
+                console.error(response);
+                throw Error(response.status);
+            }
+            return response;
+        }
+
+        function sendToArchive(alertId) {
+            fetch("api/alerts/" + alertId + "/archive", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+            })
+                .then(handleErrors)
+                .then(response => {
+                    if (response.status == 200) {
+                        let card = document.querySelector(".alert-card[data-alert-id='" + alertId + "']");
+                        card.remove();
+                        showInfoToast("Переведено в архив");
+                        updateLoadDateTime();
+                    }
+                }).catch((error) => {
+                    showErrorToast("Ошибка перевода в архив (" + error.message + ")");
+                    console.error("Ошибка перевода в архив (" + error.message + ")");
+                });
+        }
+
+        function showInfoToast(msg) {
+            toastErrorInstance.hide();
+            document.querySelector("#informationBody").innerHTML = msg;
+            toastInformationInstance.show();
+        }
+
+        function showErrorToast(msg) {
+            toastInformationInstance.hide();
+            document.querySelector("#errorBody").innerHTML = msg;
+            toastErrorInstance.show();
+        }
+
+        function loadData() {
+            loadAlerts();
+            updateLoadDateTime();
+        }
+
+        function loadAlerts() {
+            fetch("api/alerts/", {
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+            })
+                .then(handleErrors)
+                .then(response => {
+                    if (response.status == 200) {
+                        response.json().then(json => {
+                            parseAlerts(json);
+                        });
+                    }
+
+                }).catch((error) => {
+                    showErrorToast("Ошибка получения тревог и предупреждений");
+                    console.error("Ошибка получения тревог и предупреждений");
+                });
+        }
+
+        function parseAlerts(json) {
+            if (json.arrAlerts.length === 0) {
+                clearAlerts();
+            } else {
+                alertsContainer.innerHTML = '';
+            }
+
+            json.arrAlerts.forEach(a => {
+                createAlertOrWarning(a, "alert");
+            });
+
+            if (json.arrWarnings.length === 0) {
+                clearWarnings();
+            } else {
+                warningsContainer.innerHTML = '';
+            }
+
+            json.arrWarnings.forEach(a => {
+                createAlertOrWarning(a, "warning");
+            });
+        }
+
+        function createAlertOrWarning(data, type) {
+            let card = document.createElement('div');
+            card.classList.add("card", 'alert-card', (type === "alert" ? "text-bg-danger" : "text-bg-warning"), "mb-3");
+            card.dataset.alertId = data.alertId;
+
+            let cardHeader = document.createElement('div');
+            cardHeader.classList.add('card-header');
+            cardHeader.innerHTML = data.paramRule.s2RuleType + " параметра " + data.param.name;
+
+            let cardBody = document.createElement('div');
+            cardBody.classList.add('card-body');
+
+            let text = document.createElement('div');
+            text.classList.add('mb-3');
+            text.innerHTML = "Текущение значение: " + data.paramValue.value + "<br />Диапазон по уставке: " + data.paramRule.minValue + " - " + data.paramRule.maxValue + "<br />Возможные последствия: " + (data.consequence === null ? "не указаны" : data.consequence);
+
+            let openParamButton = document.createElement('button');
+            openParamButton.classList.add('btn', 'btn-outline-light', 'me-1');
+            openParamButton.innerText = 'Открыть параметр';
+
+            let addToArchiveButton = document.createElement('button');
+            addToArchiveButton.classList.add('btn', 'btn-outline-light', 'me-1');
+            addToArchiveButton.innerText = 'В архив';
+            addToArchiveButton.addEventListener('click', () => sendToArchive(data.alertId));
+
+            let sendEmailButton = document.createElement('button');
+            sendEmailButton.classList.add('btn', 'btn-outline-light');
+            sendEmailButton.innerText = 'Сообщить в цэх';
+
+            let cardFooter = document.createElement('div');
+            cardFooter.classList.add('card-footer');
+            cardFooter.innerHTML = "Время тревоги: " + parseDateTime(new Date(data.paramValue.dateTime));
+
+            card.appendChild(cardHeader);
+
+            cardBody.appendChild(text);
+            cardBody.appendChild(openParamButton);
+            cardBody.appendChild(addToArchiveButton);
+            cardBody.appendChild(sendEmailButton);
+            card.appendChild(cardBody);
+
+            card.appendChild(cardFooter);
+
+            if (type === "alert") {
+                alertsContainer.appendChild(card);
+            } else {
+                warningsContainer.appendChild(card);
+            }
+        }
+
+        function updateLoadDateTime() {
+            let date = new Date();
+            document.getElementById('dateReload').innerHTML = parseDateTime(date);
+        }
+
+        function clearAlerts() {
+            let div = document.createElement('div');
+            div.innerHTML = "Проблем нет";
+            div.classList.add('text-secondary');
+            alertsContainer.innerHTML = '';
+            alertsContainer.appendChild(div);
+        }
+
+        function clearWarnings() {
+            let div = document.createElement('div');
+            div.innerHTML = "Проблем нет";
+            div.classList.add('text-secondary');
+            warningsContainer.innerHTML = '';
+            warningsContainer.appendChild(div);
+        }
+
+        function parseDateTime(date) {
+            return date.toLocaleDateString() + " " + date.toLocaleTimeString();
+        }
     </script>
 }

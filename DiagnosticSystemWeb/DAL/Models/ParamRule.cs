@@ -1,6 +1,8 @@
 ﻿using DiagnosticSystem.DAL.Configurations;
 using Microsoft.EntityFrameworkCore;
 
+using Newtonsoft.Json;
+
 namespace DiagnosticSystem.DAL.Models
 {
     /// <summary>
@@ -75,6 +77,9 @@ namespace DiagnosticSystem.DAL.Models
             }
         }
 
-        
+        public bool IsViolated(decimal value)
+        {
+            return value >= MinValue && value <= MaxValue;
+        }
     }
 }

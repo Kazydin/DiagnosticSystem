@@ -15,6 +15,9 @@ namespace DiagnosticSystem.DAL.Configurations
 
             builder.HasMany(p => p.Alerts)
                 .WithOne(p => p.Param);
+
+            builder.HasMany(p => p.Rules)
+                .WithOne(p => p.Param);
         }
     }
 }
