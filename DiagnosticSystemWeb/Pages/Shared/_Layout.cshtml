@@ -31,7 +31,7 @@
                             <a class="nav-link text-dark @(ViewData["Title"].ToString() == "Диагностика" ? "selected" : "" )" asp-area="" asp-page="/Diagnostic">Диагностика</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark @(ViewData["Title"].ToString() == "Параметры" ? "selected" : "" )" asp-area="" asp-page="/Params">Параметры</a>
+                            <a class="nav-link text-dark @(ViewData["Title"].ToString().Contains("Параметр") ? "selected" : "" )" asp-area="" asp-page="/Params">Параметры</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark @(ViewData["Title"].ToString() == "Уставки" ? "selected" : "" )" asp-area="" asp-page="/Rules">Уставки</a>

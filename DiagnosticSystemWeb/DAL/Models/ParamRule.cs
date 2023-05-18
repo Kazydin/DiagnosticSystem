@@ -49,7 +49,7 @@ namespace DiagnosticSystem.DAL.Models
                 //    ParamRuleType.LESS => "меньше"
                 //};
 
-                return "Значение в диапазоне от " + MinValue + " до" + MaxValue;
+                return "Значение в диапазоне от " + MinValue + " до " + MaxValue;
             }
         }
 

@@ -14,5 +14,7 @@ namespace DiagnosticSystem.DAL.Models
         public IEnumerable<ParamRule> Rules { get; set; }
 
         public IEnumerable<Alert> Alerts { get; set; }
+
+        public IEnumerable<ParamValue> Values { get; set; }
     }
 }

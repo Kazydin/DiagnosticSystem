@@ -26,6 +26,7 @@ namespace DiagnosticSystemWeb.Pages
                 .Include(a => a.Param)
                 .Include(a => a.ParamRule)
                 .Include(a => a.ParamValue)
+                .Where(a => a.IsArchived == 0)
                 .ToArrayAsync();
 
             return Page();
