@@ -41,7 +41,7 @@
     </div>
     <div class="col">
         <h4>Уставки для параметра "@Model.CurrentParam.Name"</h4>
-        <button class="btn btn-outline-success mb-3">Добавить уставку</button>
+        <button class="btn btn-outline-success mb-3" id="addRuleButton">Добавить уставку</button>
         <table class="table table-bordered">
             <thead>
                 <tr>
@@ -50,13 +50,13 @@
                     <th class="bg-light">Вид срабатывания</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="rules_table">
                 @foreach (var param in Model.Rules)
                 {
                     <tr>
-                        <td>@param.ParamId</td>
+                        <td>@param.RuleId</td>
+                        <td>@param.RuleRange</td>
                         <td>@param.sRuleType</td>
-                        <td>@param.sAlertKind</td>
                     </tr>
                 }
                 @if (Model.Rules.Length == 0)
@@ -70,5 +70,146 @@
     </div>
 </div>
 
+<div class="modal fade" id="addRuleModal" tabindex="-1" aria-labelledby="addRuleLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="addRuleLabel">Добавление уставки "@Model.CurrentParam.Name"</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+            </div>
+            <div class="modal-body">
+                Выберите тип:
+                <select class="form-select" id="ruleType">
+                    <option selected hidden>Выберите</option>
+                    <option value="ALERT" type="number">Тревога</option>
+                    <option value="WARNING" type="number">Предупреждение</option>
+                </select>
+                Укажите значения:<br/>
+                <div class="d-flex">
+                    <div class="mx-2 d-flex align-items-center">от:</div><input type="number" id="minValue" class="form-control" /><div class="mx-2 d-flex align-items-center">до:</div><input type="number" id="maxValue" class="form-control" />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                <button type="button" class="btn btn-primary" id="saveRuleButton">Добавить</button>
+            </div>
+        </div>
+    </div>
+</div>
 
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="information" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header bg-primary text-white">
+            <strong class="me-auto">Уведомление</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body" id="informationBody">
 
+        </div>
+    </div>
+    <div id="error" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header bg-danger text-white">
+            <strong class="me-auto">Ошибка в ПО</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body" id="errorBody">
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const modal = new bootstrap.Modal("#addRuleModal");
+
+        const toastInformation = document.getElementById('information');
+        const toastInformationInstance = bootstrap.Toast.getOrCreateInstance(toastInformation);
+        const toastError = document.getElementById('error');
+        const toastErrorInstance = bootstrap.Toast.getOrCreateInstance(toastError);
+
+        const table = document.getElementById("rules_table");
+
+        document.getElementById("addRuleButton").addEventListener('click', addRule);
+        document.getElementById("saveRuleButton").addEventListener('click', saveRule);
+
+        function addRule() {
+            modal.show();
+        }
+
+        function handleErrors(response) {
+            if (!response.ok) {
+                console.error(response);
+                throw Error(response.status);
+            }
+            return response;
+        }
+
+        function saveRule() {
+            var ruleType = document.getElementById("ruleType").value;
+            var minValue = document.getElementById("minValue").value;
+            var maxValue = document.getElementById("maxValue").value;
+
+            if (ruleType !== "ALERT" && ruleType != "WARNING") {
+                alert("Заполните поле 'тип'");
+                return;
+            }
+
+            if (minValue.length === 0 || maxValue.length === 0) {
+                alert("Заполните поле 'от' и 'до'");
+                return;
+            }
+
+            fetch("api/rules", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    paramId: @Model.CurrentParam.ParamId,
+                    minValue: minValue,
+                    maxValue: maxValue,
+                    ruleType: ruleType
+                })
+            })
+                .then(handleErrors)
+                .then(response => {
+                    if (response.status == 200) {
+                        response.json().then(json => {
+                            parseRule(json);
+                        });
+                    }
+                }).catch((error) => {
+                    showErrorToast("Ошибка создания уставки (" + error.message + ")");
+                    console.error("Ошибка создания уставки (" + error.message + ")");
+                });
+        }
+
+        function parseRule(data) {
+            showInfoToast("Уставка создана");
+            modal.hide();
+
+            var tr = document.createElement("tr");
+
+            var tdId = document.createElement("td");
+            tdId.innerHTML = data.ruleId;
+
+            var tdRange = document.createElement("td");
+            tdRange.innerHTML = data.ruleRange;
+
+            var tdType = document.createElement("td");
+            tdType.innerHTML = data.sRuleType;
+
+            tr.appendChild(tdId);
+            tr.appendChild(tdRange);
+            tr.appendChild(tdType);
+
+            table.appendChild(tr);
+        }
+
+        function showInfoToast(msg) {
+            toastErrorInstance.hide();
+            document.querySelector("#informationBody").innerHTML = msg;
+            toastInformationInstance.show();
+        }
+    </script>
+}

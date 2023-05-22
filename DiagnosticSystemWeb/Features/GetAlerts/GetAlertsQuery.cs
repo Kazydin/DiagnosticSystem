@@ -27,9 +27,9 @@ namespace DiagnosticSystem.Features.GetAlerts
             .Where(a => a.IsArchived == 0)
             .ToArrayAsync();
 
-            model.arrAlerts = Alerts.Where(a => a.ParamRule?.AlertKind == ParamRuleAlertKind.ALERT).ToArray();
+            model.arrAlerts = Alerts.Where(a => a.ParamRule?.RuleType == ParamRuleType.ALERT).ToArray();
 
-            model.arrWarnings = Alerts.Where(a => a.ParamRule?.AlertKind == ParamRuleAlertKind.WARNING).ToArray();
+            model.arrWarnings = Alerts.Where(a => a.ParamRule?.RuleType == ParamRuleType.WARNING).ToArray();
 
             return Ok(model);
         }

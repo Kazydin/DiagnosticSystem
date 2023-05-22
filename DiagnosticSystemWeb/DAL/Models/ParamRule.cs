@@ -11,14 +11,19 @@ namespace DiagnosticSystem.DAL.Models
     [EntityTypeConfiguration(typeof(ParamRuleConfiguration))]
     public class ParamRule
     {
+        public ParamRule(ParamRuleDto ruleDto)
+        {
+            ParamId = ruleDto.ParamId;
+            MinValue = ruleDto.MinValue;
+            MaxValue = ruleDto.MaxValue;
+            RuleType = ruleDto.RuleType;
+        }
+
+        public ParamRule() { }
+
         public int RuleId { get; set; }
 
         public int ParamId { get; set; }
-
-        /// <summary>
-        /// Тип уставки для срабатывания
-        /// </summary>
-        public string RuleType { get; set; }
 
         /// <summary>
         /// Минимальное значение
@@ -33,46 +38,29 @@ namespace DiagnosticSystem.DAL.Models
         /// <summary>
         /// Тип уставки
         /// </summary>
-        public string AlertKind { get; set; }
+        public string RuleType { get; set; }
 
         public Param Param { get; set; }
 
         public IEnumerable<Alert> Alerts { get; set; }
 
-        public string sRuleType
+        public string RuleRange
         {
             get
             {
-                //string delimiter = RuleType switch
-                //{
-                //    ParamRuleType.MORE => "больше",
-                //    ParamRuleType.LESS => "меньше"
-                //};
-
                 return "Значение в диапазоне от " + MinValue + " до " + MaxValue;
             }
         }
 
-        public string s2RuleType
+        public string sRuleType
         {
             get
             {
                 return RuleType switch
                 {
-                    ParamRuleType.MORE => "превышение",
-                    ParamRuleType.LESS => "понижение"
-                };
-            }
-        }
-
-        public string sAlertKind
-        {
-            get
-            {
-                return AlertKind switch
-                {
-                    ParamRuleAlertKind.ALERT => "тревога",
-                    ParamRuleAlertKind.WARNING => "предупреждение"
+                    ParamRuleType.ALERT => "тревога",
+                    ParamRuleType.WARNING => "предупреждение",
+                    _ => ""
                 };
             }
         }

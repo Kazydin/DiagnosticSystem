@@ -13,7 +13,7 @@ namespace DiagnosticSystem.Features
 
         [Route("alerts/{id}/archive")]
         [HttpPost]
-        public async Task<IActionResult> Index(int id, CancellationToken cancellationToken)
+        public async Task<IActionResult> RunAsync(int id, CancellationToken cancellationToken)
         {
             var alert = await _store.Alerts.Where(a => a.AlertId == id && a.IsArchived == 0).FirstOrDefaultAsync();
 

@@ -3,13 +3,13 @@
     public class ParamRuleType
     {
         /// <summary>
-        /// Превышение порога
+        /// Тревога
         /// </summary>
-        public const string MORE = "MORE";
+        public const string ALERT = "ALERT";
 
         /// <summary>
-        /// Ниже допустимого
+        /// Предупреждениеs
         /// </summary>
-        public const string LESS = "LESS";
+        public const string WARNING = "WARNING";
     }
 }

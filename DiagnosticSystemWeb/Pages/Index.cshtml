@@ -161,7 +161,7 @@
 
             let cardHeader = document.createElement('div');
             cardHeader.classList.add('card-header');
-            cardHeader.innerHTML = data.paramRule.s2RuleType + " параметра " + data.param.name;
+            cardHeader.innerHTML = data.paramRule.sRuleType + " параметра " + data.param.name;
 
             let cardBody = document.createElement('div');
             cardBody.classList.add('card-body');
@@ -182,7 +182,7 @@
 
             let sendEmailButton = document.createElement('a');
             sendEmailButton.classList.add('btn', 'btn-outline-light');
-            sendEmailButton.innerText = 'Сообщить в цэх';
+            sendEmailButton.innerText = 'Сообщить в цех';
             sendEmailButton.href = "mailto:name@example.com?subject=Коллеги, добрый день! Обнаружили проблему по параметру '" + data.param.name + "'. Просьба проверить со своей стороны."
 
             let cardFooter = document.createElement('div');

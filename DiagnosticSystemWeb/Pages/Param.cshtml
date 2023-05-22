@@ -20,9 +20,9 @@
         @foreach (var param in Model.Param.Rules)
         {
             <tr>
-                <td>@param.ParamId</td>
+                <td>@param.RuleId</td>
+                <td>@param.RuleRange</td>
                 <td>@param.sRuleType</td>
-                <td>@param.sAlertKind</td>
             </tr>
         }
         @if (Model.Param.Rules.Count() == 0)
@@ -81,7 +81,7 @@
                 <td>@alert.ParamRule.RuleId</td>
                 <td>@alert.ValueId</td>
                 <td>@alert.ParamValue.Value</td>
-                <td>@alert.ParamRule.sRuleType</td>
+                <td>@alert.ParamRule.RuleRange</td>
                 <td>@(alert.Consequence ??= "не указаны")</td>
             </tr>
         }
