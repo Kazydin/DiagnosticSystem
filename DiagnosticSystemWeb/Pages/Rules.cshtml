@@ -33,7 +33,7 @@
     <div class="col">
         <h4>Параметры</h4>
         <ul class="list-group">
-            @foreach (var param in Model.Params)
+            @foreach (var param in Model.Params.OrderBy(r => r.ParamId))
             {
                 <li class="list-group-item param p-0 @(Model.CurrentParam.ParamId == param.ParamId ? "selected" : "")"><a href="?paramId=@param.ParamId" class="param-link">@param.Name</a></li>
             }
@@ -51,7 +51,7 @@
                 </tr>
             </thead>
             <tbody id="rules_table">
-                @foreach (var param in Model.Rules)
+                @foreach (var param in Model.Rules.OrderBy(r => r.RuleId))
                 {
                     <tr>
                         <td>@param.RuleId</td>
@@ -210,6 +210,12 @@
             toastErrorInstance.hide();
             document.querySelector("#informationBody").innerHTML = msg;
             toastInformationInstance.show();
+        }
+
+        function showErrorToast(msg) {
+            toastInformationInstance.hide();
+            document.querySelector("#errorBody").innerHTML = msg;
+            toastErrorInstance.show();
         }
     </script>
 }

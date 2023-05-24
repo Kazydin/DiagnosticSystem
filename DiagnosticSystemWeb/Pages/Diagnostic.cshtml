@@ -7,7 +7,7 @@
 <h1 class="mb-3">Диагностика</h1>
 
 <h4 class="my-2">Возможные последствия по активным тревогам</h4>
-@foreach (var alert in Model.Alerts.Where(a => a.ParamRule.RuleType == DiagnosticSystem.DAL.Models.ParamRuleType.ALERT))
+@foreach (var alert in Model.Alerts.Where(a => a.ParamRule.RuleType == DiagnosticSystem.DAL.Models.ParamRuleType.ALERT).OrderBy(r => r.ParamValue.DateTime))
 {
     <div class="alert alert-danger" role="alert">
         Тревога: @alert.ParamValue.DateTime<br />
@@ -17,7 +17,7 @@
         <div class="mt-2 fw-bold">ВНИМЕНИЕ: @(alert.Consequence ?? "Последствия не указаны")</div>
     </div>
 }
-@foreach (var alert in Model.Alerts.Where(a => a.ParamRule.RuleType == DiagnosticSystem.DAL.Models.ParamRuleType.WARNING))
+@foreach (var alert in Model.Alerts.Where(a => a.ParamRule.RuleType == DiagnosticSystem.DAL.Models.ParamRuleType.WARNING).OrderBy(r => r.ParamValue.DateTime))
 {
     <div class="alert alert-warning" role="alert">
         Предупреждение: @alert.ParamValue.DateTime<br />

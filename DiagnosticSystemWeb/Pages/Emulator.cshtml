@@ -21,9 +21,132 @@
                 <td>@param.ParamId</td>
                 <td>@param.Name</td>
                 <td>
-                    <button class="btn btn-outline-secondary" disabled>Добавить значение вручную</button>
+                    <button class="btn btn-outline-secondary add-value-button" data-param-id="@param.ParamId">Добавить значение вручную</button>
                 </td>
             </tr>
         }
     </tbody>
 </table>
+
+<div class="modal fade" id="addValueModal" tabindex="-1" aria-labelledby="addValueLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="addValueLabel">Добавление значения для параметра</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+            </div>
+            <div class="modal-body">
+                Укажите значение:
+                <input type="number" id="value" class="form-control" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                <button type="button" class="btn btn-primary" id="saveValueButton">Добавить</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="information" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header bg-primary text-white">
+            <strong class="me-auto">Уведомление</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body" id="informationBody">
+
+        </div>
+    </div>
+    <div id="error" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header bg-danger text-white">
+            <strong class="me-auto">Ошибка в ПО</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body" id="errorBody">
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const buttons = document.querySelectorAll(".add-value-button");
+        buttons.forEach(b => b.addEventListener('click', addValue));
+
+        document.getElementById("saveValueButton").addEventListener('click', saveValue);
+
+        var paramId = 0;
+
+        const modal = new bootstrap.Modal("#addValueModal");
+
+        const toastInformation = document.getElementById('information');
+        const toastInformationInstance = bootstrap.Toast.getOrCreateInstance(toastInformation);
+        const toastError = document.getElementById('error');
+        const toastErrorInstance = bootstrap.Toast.getOrCreateInstance(toastError);
+
+        function addValue(e) {
+            paramId = e.target.dataset.paramId;
+
+            modal.show();
+        }
+
+        function handleErrors(response) {
+            if (!response.ok) {
+                console.error(response);
+                throw Error(response.status);
+            }
+            return response;
+        }
+
+        function showInfoToast(msg) {
+            toastErrorInstance.hide();
+            document.querySelector("#informationBody").innerHTML = msg;
+            toastInformationInstance.show();
+        }
+
+        function saveValue() {
+            var value = document.getElementById("value").value;
+
+            if (value.length === 0) {
+                alert("Заполните поле 'значение'");
+                return;
+            }
+
+            fetch("api/params", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    paramId: paramId,
+                    value: value
+                })
+            })
+                .then(handleErrors)
+                .then(response => {
+                    if (response.status == 200) {
+                        showInfoToast("Значение добавлено");
+                        modal.hide();
+                    }
+                }).catch((error) => {
+                    showErrorToast("Ошибка занесения значения (" + error.message + ")");
+                    console.error("Ошибка занесения значения (" + error.message + ")");
+                });
+        }
+
+        function showInfoToast(msg) {
+            toastErrorInstance.hide();
+            document.querySelector("#informationBody").innerHTML = msg;
+            toastInformationInstance.show();
+        }
+
+        function showErrorToast(msg) {
+            toastInformationInstance.hide();
+            document.querySelector("#errorBody").innerHTML = msg;
+            toastErrorInstance.show();
+        }
+
+       
+
+    </script>
+} 

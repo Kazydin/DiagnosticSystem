@@ -17,7 +17,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var param in Model.Param.Rules)
+        @foreach (var param in Model.Param.Rules.OrderBy(r => r.RuleId))
         {
             <tr>
                 <td>@param.RuleId</td>
@@ -45,7 +45,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var value in Model.Param.Values)
+        @foreach (var value in Model.Param.Values.OrderBy(r => r.ValueId))
         {
             <tr>
                 <td>@value.ValueId</td>
@@ -75,7 +75,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var alert in Model.Param.Alerts.Where(a => a.IsArchived == 1))
+        @foreach (var alert in Model.Param.Alerts.OrderBy(r => r.AlertId).Where(a => a.IsArchived == 1))
         {
             <tr>
                 <td>@alert.ParamRule.RuleId</td>

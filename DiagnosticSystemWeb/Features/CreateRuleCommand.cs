@@ -31,8 +31,6 @@ namespace DiagnosticSystem.Features
             {
                 return BadRequest(ex.Message);
             }
-
-
         }
     }
 }
