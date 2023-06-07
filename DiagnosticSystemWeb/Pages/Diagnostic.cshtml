@@ -14,7 +14,11 @@
         Параметр: @alert.Param.Name<br />
         Текущение значение: @alert.ParamValue.Value<br />
         Диапазон по уставке: @alert.ParamRule.MinValue - @alert.ParamRule.MaxValue<br />
-        <div class="mt-2 fw-bold">ВНИМЕНИЕ: @(alert.Consequence ?? "Последствия не указаны")</div>
+        <div class="mt-2 fw-bold">ВНИМАНИЕ: @(alert.Consequence == null ? "Последствия не указаны" : alert.Consequence.ConsequenceText)</div>
+        @if (alert.Consequence != null)
+        {
+            <div>Причины: @(alert.Consequence.ReasonText)</div>
+        }
     </div>
 }
 @foreach (var alert in Model.Alerts.Where(a => a.ParamRule.RuleType == DiagnosticSystem.DAL.Models.ParamRuleType.WARNING).OrderBy(r => r.ParamValue.DateTime))
@@ -24,6 +28,10 @@
         Параметр: @alert.Param.Name<br />
         Текущение значение: @alert.ParamValue.Value<br />
         Диапазон по уставке: @alert.ParamRule.MinValue - @alert.ParamRule.MaxValue<br />
-        <div class="mt-2 fw-bold">ВНИМЕНИЕ: @(alert.Consequence ?? "Последствия не указаны")</div>
+        <div class="mt-2 fw-bold">ВНИМАНИЕ: @(alert.Consequence == null ? "Последствия не указаны" : alert.Consequence.ConsequenceText)</div>
+        @if (alert.Consequence != null)
+        {
+            <div>Причины: @(alert.Consequence.ReasonText)</div>
+        }
     </div>
 }

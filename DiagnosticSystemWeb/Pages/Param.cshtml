@@ -72,6 +72,7 @@
             <th class="bg-light">Значение</th>
             <th class="bg-light">Диапазон по уставке</th>
             <th class="bg-light">Последствия</th>
+            <th class="bg-light">Причины</th>
         </tr>
     </thead>
     <tbody>
@@ -82,13 +83,14 @@
                 <td>@alert.ValueId</td>
                 <td>@alert.ParamValue.Value</td>
                 <td>@alert.ParamRule.RuleRange</td>
-                <td>@(alert.Consequence ??= "не указаны")</td>
+                <td>@(alert.Consequence == null ? "Последствия не указаны" : alert.Consequence.ConsequenceText)</td>
+                <td>@(alert.Consequence == null ? "Причины не указаны" : alert.Consequence.ReasonText)</td>
             </tr>
         }
         @if (Model.Param.Alerts.Where(a => a.IsArchived == 1).Count() == 0)
         {
             <tr>
-                <td colspan="5">Архив пуст</td>
+                <td colspan="6">Архив пуст</td>
             </tr>
         }
     </tbody>

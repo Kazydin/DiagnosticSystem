@@ -15,7 +15,7 @@ namespace DiagnosticSystem.DAL.Models
 
         public int ValueId { get; set; }
 
-        public string? Consequence { get; set; }
+        public int? ConsId { get; set; }
 
         public int IsArchived { get; set; }
 
@@ -24,5 +24,7 @@ namespace DiagnosticSystem.DAL.Models
         public ParamRule ParamRule { get; set; }
 
         public ParamValue ParamValue { get; set; }
+
+        public ParamConsequence Consequence { get; set; }
     }
 }

@@ -29,6 +29,8 @@ namespace DiagnosticSystemWeb.Pages
                 .ThenInclude(a => a.ParamRule)
                 .Include(p => p.Alerts)
                 .ThenInclude(a => a.ParamValue)
+                .Include(p => p.Alerts)
+                .ThenInclude(a => a.Consequence)
                 .Where(p => p.ParamId == id).FirstOrDefaultAsync();
 
             return Page();

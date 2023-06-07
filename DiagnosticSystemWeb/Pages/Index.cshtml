@@ -168,7 +168,7 @@
 
             let text = document.createElement('div');
             text.classList.add('mb-3');
-            text.innerHTML = "Текущение значение: " + data.paramValue.value + "<br />Диапазон по уставке: " + data.paramRule.minValue + " - " + data.paramRule.maxValue + "<br />Возможные последствия: " + (data.consequence === null ? "не указаны" : data.consequence);
+            text.innerHTML = "Текущение значение: " + data.paramValue.value + "<br />Диапазон по уставке: " + data.paramRule.minValue + " - " + data.paramRule.maxValue + "<br />Возможные последствия: " + (data.consequence === null ? "не указаны" : data.consequence.consequenceText);
 
             let openParamButton = document.createElement('button');
             openParamButton.classList.add('btn', 'btn-outline-light', 'me-1');

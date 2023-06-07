@@ -24,6 +24,7 @@ namespace DiagnosticSystem.Features.GetAlerts
                 .Include(a => a.Param)
                 .Include(a => a.ParamRule)
                 .Include(a => a.ParamValue)
+                .Include(p => p.Consequence)
             .Where(a => a.IsArchived == 0)
             .ToArrayAsync();
 

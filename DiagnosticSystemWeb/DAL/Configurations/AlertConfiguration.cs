@@ -24,6 +24,10 @@ namespace DiagnosticSystem.DAL.Configurations
             builder.HasOne(p => p.ParamValue)
                 .WithMany(p => p.Alerts)
                 .HasForeignKey(p => p.ValueId);
+
+            builder.HasOne(p => p.Consequence)
+                .WithMany()
+                .HasForeignKey(p => p.ConsId);
         }
     }
 }

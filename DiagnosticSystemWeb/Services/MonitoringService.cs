@@ -42,6 +42,8 @@ namespace DiagnosticSystem.Services
                     var value = await _store.ParamValues
                         .Include(p => p.Param)
                         .ThenInclude(r => r.Rules)
+                        .Include(p => p.Param)
+                        .ThenInclude(p => p.Consequences)
                         .Where(pv => pv.IsChecked == 0)
                         .FirstOrDefaultAsync(cancellationToken);
 
@@ -51,11 +53,14 @@ namespace DiagnosticSystem.Services
 
                         foreach (var rule in brokenRules)
                         {
+                            var brokenConsequence = value.Param.Consequences.FirstOrDefault(r => r.IsViolated(value.Value));
+
                             await _store.Alerts.AddAsync(new Alert()
                             {
                                 ParamId = value.ParamId,
                                 RuleId = rule.RuleId,
-                                ValueId = value.ValueId
+                                ValueId = value.ValueId,
+                                ConsId = brokenConsequence?.ConsId
                             }, cancellationToken);
                         }
 
